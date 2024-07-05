@@ -1,13 +1,45 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
-  standalone: true,
-  imports: [RouterOutlet],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  title = 'pass-detect';
+  submitted = false;
+  working = false;
+  complete = false;
+  strongPassword = false;
+
+  signupForm = new FormGroup({
+    email: new FormControl(null, [Validators.email, Validators.required]),
+    password: new FormControl(null, [
+      Validators.minLength(8),
+      Validators.required,
+    ]),
+  });
+
+  get f() {
+    return this.signupForm.controls;
+  }
+
+  onPasswordStrengthChanged(event: boolean) {
+    this.strongPassword = event;
+  }
+
+  onSubmit() {
+    this.submitted = true;
+
+    if (this.signupForm.invalid) {
+      return;
+    }
+
+    this.working = true;
+    setTimeout(() => {
+      this.signupForm.reset();
+      this.working = false;
+      this.complete = true;
+    }, 1000);
+  }
 }
